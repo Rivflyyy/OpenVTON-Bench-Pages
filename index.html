@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenVTON-Bench: A Large-Scale High-Resolution Benchmark for Controllable Virtual Try-On Evaluation</title>
+<meta name="description" content="OpenVTON-Bench: ~100K high-resolution virtual try-on pairs and a five-dimension hybrid evaluation protocol (VLM judge + multi-scale representation metric). NeurIPS 2026, Track on Evaluations and Datasets.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OpenVTON-Bench · NeurIPS 2026">
+<meta property="og:description" content="A large-scale high-resolution benchmark for controllable virtual try-on evaluation: 99,925 pairs, five interpretable dimensions, VLM judge + multi-scale representation metric.">
+<meta property="og:url" content="https://rivflyyy.github.io/OpenVTON-Bench-Pages/">
+<meta property="og:image" content="https://rivflyyy.github.io/OpenVTON-Bench-Pages/static/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="static/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="static/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="static/fonts/InterDisplay-Black.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="static/katex/katex.min.css">
+<link rel="stylesheet" href="static/css/style.css">
+<script defer src="static/katex/katex.min.js"></script>
+<script defer src="static/katex/contrib/auto-render.min.js"></script>
+<script defer src="static/js/main.js"></script>
+</head>
+<body>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top">OpenVTON<span>-Bench</span></a>
+    <ul>
+      <li><a class="l" href="#overview">Overview</a></li>
+      <li><a class="l" href="#benchmark">Benchmark</a></li>
+      <li><a class="l" href="#protocol">Protocol</a></li>
+      <li><a class="l" href="#results">Results</a></li>
+      <li><a class="l" href="#citation">Citation</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ======================= HERO ======================= -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="venue"><img src="static/img/logo_neurips.svg" alt="NeurIPS">NeurIPS 2026 · Track on Evaluations and Datasets</span>
+    <h1>OpenVTON<span>-Bench</span></h1>
+    <p class="sub">A Large-Scale High-Resolution Benchmark for Controllable Virtual Try-On Evaluation</p>
+    <div class="authors">
+      <span>Jin Li<sup>1,2*</sup></span><span>Tao Chen<sup>1*</sup></span><span>Kai Wen<sup>1,2</sup></span><span>Siqi Yin<sup>1,2</sup></span>
+      <span>Shuai Jiang<sup>1</sup></span><span>Weijie Wang<sup>1</sup></span><span>Jingwen Luo<sup>1</sup></span><span>Chenhui Wu<sup>1†</sup></span>
+    </div>
+    <div class="affils">
+      <div class="affil"><img class="rx" src="static/img/logo_renxing.webp" alt="Renxing Technology logo"><span><sup>1</sup>Renxing Intelligence<br>Hangzhou, China</span></div>
+      <div class="affil"><img src="static/img/logo_hdu.svg" alt="Hangzhou Dianzi University logo"><span><sup>2</sup>Hangzhou Dianzi University<br>Hangzhou, China</span></div>
+    </div>
+    <p class="notes"><span><sup>*</sup>Equal contribution</span><span><sup>†</sup>Project lead &amp; corresponding author</span></p>
+    <div class="btns">
+      <a class="btn" href="https://openreview.net/forum?id=hkbyKxmccF" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Paper</a>
+      <a class="btn" href="https://arxiv.org/abs/2601.22725" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg>arXiv</a>
+      <a class="btn" href="https://github.com/RenxingIntelligence/OpenVTON-Bench" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>Code</a>
+      <a class="btn" href="https://huggingface.co/datasets/RenxingIntelligence/OpenVTON" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>Dataset</a>
+      <!-- Poster PDF not published yet: set href and drop class "soon" -->
+      <a class="btn soon" href="#" aria-disabled="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>Poster <small>soon</small></a>
+      <a class="btn" href="#citation"><svg viewBox="0 0 24 24"><path d="M7 7h4v4H7zM13 7h4v4h-4zM7 11c0 3-1 4-3 5M13 11c0 3-1 4-3 5"/></svg>BibTeX</a>
+    </div>
+    <p class="session"><a href="https://neurips.cc/virtual/2026/poster/139156" target="_blank" rel="noopener">NeurIPS 2026 poster session</a> · Tue, Dec 8, 2026 · 17:00–20:00 AEDT · Hall 1-4</p>
+  </div>
+</header>
+
+<!-- ======================= TL;DR ======================= -->
+<div class="tldr" id="overview">
+  <div class="wrap">
+    <div class="band">
+      <div class="msg"><b>Looking real ≠ getting the garment right.</b><span>OpenVTON-Bench checks whether the garment, the person and the scene are preserved — on high-resolution, real-world try-on pairs.</span></div>
+      <div class="st"><div class="v">99,925</div><div class="c"><b>image pairs</b>, 1024² – 1536²</div></div>
+      <div class="st"><div class="v">20</div><div class="c"><b>DINOv3 visual clusters</b> for stratified sampling</div></div>
+      <div class="st"><div class="v">5<small>dims</small></div><div class="c"><b>VLM judge</b> + <b>representation metric</b></div></div>
+      <div class="st"><div class="v hl">0.833</div><div class="c"><b>Kendall τ with human model rankings</b> (SSIM: 0.611)</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= TEASER ======================= -->
+<section class="s" style="padding-top:44px">
+  <div class="wrap">
+    <div class="card explorer">
+      <h3>Photorealism does not guarantee garment fidelity</h3>
+      <p class="cap" style="margin:0 0 14px">Pick an example: masked person and target garment, then the outputs of nine try-on systems. Examples 1–2 appear in the main paper; 3–12 in the appendix.</p>
+      <div class="picks" id="picks" role="group" aria-label="Choose an example"></div>
+      <div class="qgrid" id="qgrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ABSTRACT ======================= -->
+<section class="s">
+  <div class="wrap">
+    <div class="kicker">Abstract</div>
+    <div class="card abstract">
+      <p>Recent advances in diffusion models have significantly elevated the visual fidelity of Virtual Try-On (VTON) systems, yet reliable evaluation remains a persistent bottleneck. Traditional metrics struggle to quantify fine-grained texture details and semantic consistency, while existing datasets fail to meet commercial standards in scale and diversity. We present OpenVTON-Bench, a large-scale benchmark comprising approximately 100K high-resolution image pairs (up to \(1536\times1536\)). The dataset combines Gemini-powered dense captioning with stratified sampling across 20 visual clusters obtained by DINOv3 K-Means. To support reliable evaluation, we propose a multi-modal protocol that measures VTON quality along five interpretable dimensions: background consistency, identity fidelity, texture fidelity, shape plausibility, and overall realism. The protocol integrates VLM-based semantic reasoning with a novel Multi-Scale Representation Metric based on SAM3 segmentation and morphological erosion, enabling the separation of boundary alignment errors from internal texture artifacts. Under the specified evaluation rubric, our representation metric shows strong agreement with human model rankings (Kendall's \(\tau\) of 0.833 vs. 0.611 for SSIM).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BENCHMARK ======================= -->
+<section class="s" id="benchmark">
+  <div class="wrap">
+    <div class="kicker">01 · Benchmark</div>
+    <h2>A benchmark beyond the studio</h2>
+    <p class="lead">Legacy try-on data is <em>studio-centric</em> — clean backdrops, standardized poses, restricted resolutions — and recent higher-resolution efforts remain small or closed. OpenVTON-Bench offers ~100K open, high-resolution pairs from real e-commerce and social-media scenes.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Scale × resolution × openness</h3>
+        <div class="chartwrap" id="landscape"></div>
+        <p class="cap">Filled = open source, hollow = closed. Bars span reported resolution ranges. VTBench (2,933 pairs, closed) reports no resolution.</p>
+      </div>
+      <div class="card">
+        <h3>Comparison with existing VTON datasets</h3>
+        <div class="tw"><table class="t" id="tab-datasets"></table></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Three-stage construction</h3>
+      <figure><img src="static/img/pipeline.webp" alt="Data construction pipeline: collection, hybrid annotation, semantic-aware filtering" loading="lazy" width="2200" height="1173"></figure>
+      <p class="cap"><b>(1) Collection</b> — &gt;3M raw samples from public e-commerce sources and IGPair (IMAGDressing-v1), screened with aesthetic scoring and face detection; a resolution filter (both sides ≥ 1024 px, long side ≤ 1536 px) leaves ~300K. <b>(2) Hybrid annotation</b> — annotators verify every candidate pair; Gemini 2.0 Flash writes coarse-to-fine dense captions (3M+ words). <b>(3) Semantic-aware filtering</b> — DINOv3 ViT-H+ embeddings, K-Means (K = 20) and cluster-stratified sampling yield the final 99,925 pairs.</p>
+    </div>
+
+    <div class="stats" style="margin-top:20px">
+      <div class="stat"><b class="num">89,927</b><span>train pairs</span></div>
+      <div class="stat"><b class="num">4,989</b><span>validation pairs</span></div>
+      <div class="stat"><b class="num">5,009</b><span>test pairs</span></div>
+      <div class="stat"><b>CC BY-NC 4.0</b><span>non-commercial research license</span></div>
+    </div>
+
+    <div class="grid2" style="margin-top:20px">
+      <div class="card">
+        <h3>Paired, masked, real scenes</h3>
+        <figure><img src="static/img/samples.webp" alt="Masked person, ground truth and target garment examples" loading="lazy" width="2000" height="1015"></figure>
+        <p class="cap">Each sample: cloth-agnostic person, ground truth and target garment (inset). Faces are generatively anonymized.</p>
+      </div>
+      <div class="card">
+        <h3>20 visual sampling clusters</h3>
+        <figure><img src="static/img/clusters.webp" alt="Examples from the 20 DINOv3 K-Means clusters" loading="lazy" width="2200" height="1555"></figure>
+        <p class="cap">Nineteen clusters hold 5,012–5,088 pairs; C13 keeps all 3,340 available. The released <code>category</code> field holds 14 caption-derived labels, separate from these clusters.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PROTOCOL ======================= -->
+<section class="s" id="protocol">
+  <div class="wrap">
+    <div class="kicker">02 · Evaluation protocol</div>
+    <h2>Five-dimension hybrid evaluation</h2>
+    <p class="lead">FID, SSIM and LPIPS are <em>semantically blind</em>: an image can score well while distorting a logo or a body shape. We decompose quality into five interpretable dimensions and measure them with two complementary tracks.</p>
+
+    <div class="dims">
+      <div class="dim" style="--c:var(--d-bg)"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.6"/></svg></div><b>Background consistency</b><span>walls, floor, objects, shadows</span></div>
+      <div class="dim" style="--c:var(--d-id)"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-4.2 4.3-6.3 8-6.3s6.8 2.1 8 6.3"/></svg></div><b>Identity fidelity</b><span>face, skin tone, body structure</span></div>
+      <div class="dim" style="--c:var(--d-tex)"><div class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12l8-8M4 20L20 4M12 20l8-8"/></svg></div><b>Texture fidelity</b><span>logos, prints, fabric material</span></div>
+      <div class="dim" style="--c:var(--d-shape)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M9 3l3 2 3-2 6 3-2 5-3-1v11H8V10l-3 1-2-5z"/></svg></div><b>Shape plausibility</b><span>geometric style of the garment</span></div>
+      <div class="dim" style="--c:var(--d-real)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></svg></div><b>Overall realism</b><span>photorealistic, seamless composition</span></div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <figure><img src="static/img/framework.webp" alt="The five-dimension evaluation framework with VLM-based semantic scoring and the representation-based hierarchical metric" loading="lazy" width="2200" height="1174"></figure>
+    </div>
+
+    <div class="grid2" style="margin-top:20px">
+      <div class="card">
+        <h3><span class="tag">Track A</span>VLM-as-a-Judge</h3>
+        <p>Qwen-VL-Plus reads the triplet of garment \(I_g\), ground truth \(I_{gt}\) and generated image \(\hat I\) with a task rubric \(\mathcal{T}\), and scores each dimension on a 1–5 scale:</p>
+        <div class="eq">\[ \mathbf{s}=[s_{bg},s_{id},s_{tex},s_{shape},s_{real}]=\mathcal{V}(I_g,I_{gt},\hat I;\mathcal{T}) \]</div>
+        <p class="cap" style="margin:0">This captures semantic attributes — logo clarity, garment-category correctness — that CNN-based metrics cannot see.</p>
+      </div>
+      <div class="card">
+        <h3><span class="tag">Track B</span>Multi-scale representation metric</h3>
+        <p>SAM3 garment masks are progressively eroded; frozen DINOv3 features \(\Phi\) compare the same nested regions of \(\hat I\) and \(I_{gt}\):</p>
+        <div class="eq">\[ \begin{gathered} M^{(k)} = M\ominus\underbrace{(B\oplus\cdots\oplus B)}_{k\ \text{times}} \\[2pt] S_{\text{rep}}^{(k)}=\cos\!\big(\Phi(\hat I\odot\hat M^{(k)}),\;\Phi(I_{gt}\odot M_{gt}^{(k)})\big) \end{gathered} \]</div>
+        <p class="cap" style="margin:0">Small \(k\) keeps the garment boundary; large \(k\) isolates interior fabric. With the global score \(S_{\text{global}}=\cos(\Phi(\hat I),\Phi(I_{gt}))\) this yields \(\bar S\).</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <div class="erode">
+        <div class="view" id="erode-view">
+          <img src="static/img/erosion_k0.webp" alt="Garment mask erosion level 0" data-k="0">
+          <img src="static/img/erosion_k1.webp" alt="Garment mask erosion level 1" data-k="1" style="opacity:0">
+          <img src="static/img/erosion_k2.webp" alt="Garment mask erosion level 2" data-k="2" style="opacity:0">
+          <img src="static/img/erosion_k3.webp" alt="Garment mask erosion level 3" data-k="3" style="opacity:0">
+        </div>
+        <div>
+          <h3>Try it: erode the garment mask</h3>
+          <div class="kval">k = <span id="kval">0</span></div>
+          <p id="kdesc" style="color:var(--ink-2)">Full mask — the score reflects both boundary alignment and texture.</p>
+          <input type="range" id="kslider" min="0" max="3" step="1" value="0" aria-label="Erosion level k">
+          <div class="ticks"><span>boundary + texture</span><span>interior texture only</span></div>
+          <p class="cap">Illustration on an OpenVTON-Bench ground-truth image; erosion is enlarged for visibility (the paper uses a 3×3 structuring element, k = 0…3). PSNR, SSIM, LPIPS and FID are also reported as auxiliary references.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3>Validated by a blinded human study</h3>
+      <div class="stats" style="margin:8px 0 14px">
+        <div class="stat"><b class="num">76</b><span>participants</span></div>
+        <div class="stat"><b class="num">92,072</b><span>evaluation records</span></div>
+        <div class="stat"><b>≥ 2</b><span>ratings per triplet, averaged</span></div>
+        <div class="stat"><b class="num">0.70</b><span>composite Krippendorff's α</span></div>
+      </div>
+      <p style="color:var(--ink-2);margin:0">Raters scored randomly sampled triplets on the same five dimensions (5-point scale) without seeing method identities or VLM outputs, scores or rationales. After task-level outlier removal and rater mean-centering, agreement ranges from α = 0.468 (background) to 0.835 (realism). VLM and human model means differ by MAE 0.299 on the 1–5 scale, with 40 of 45 model-by-dimension comparisons within 0.5; UNO accounts for four of the five larger gaps. The study measures model-ranking agreement under the specified rubric, not unconstrained human preference.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= RESULTS ======================= -->
+<section class="s" id="results">
+  <div class="wrap">
+    <div class="kicker">03 · Results</div>
+    <h2>What the benchmark reveals</h2>
+    <p class="lead">Nine representative systems — diffusion-based and editing-based, open and commercial — evaluated on OpenVTON-Bench.</p>
+
+    <div class="find">
+      <div class="card"><div class="i">1</div><p><b>Texture–realism gap.</b> FLUX.1-Kontext-dev reaches VLM realism 4.137 but texture only 3.574: large-scale pre-training yields photorealism, not faithful garment patterns.</p></div>
+      <div class="card"><div class="i">2</div><p><b>Erosion separates boundary from interior.</b> OOTD drops from 0.797 to 0.669 as masks erode; YingHui still holds 0.823 at the deepest level.</p></div>
+      <div class="card"><div class="i">3</div><p><b>Closer to human rankings.</b> \(\bar S\) reaches Kendall τ = 0.833 and Spearman ρ = 0.933 with human model rankings, vs. 0.611 / 0.767 for SSIM.</p></div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3>Semantic evaluation: VLM and human scores (1–5)</h3>
+      <div class="tw"><table class="t" id="tab-vlm"></table></div>
+      <p class="cap"><b>Bold</b>: best, <u>underline</u>: second best, per column. Human columns in grey.</p>
+    </div>
+
+    <div class="grid2" style="margin-top:20px">
+      <div class="card">
+        <h3>The texture–realism gap</h3>
+        <div class="legend"><span><i style="background:var(--d-tex)"></i>Texture \(s_{tex}\)</span><span><i style="background:var(--d-real)"></i>Realism \(s_{real}\)</span><span>Δ = realism − texture</span></div>
+        <div class="dumb" id="gap"></div>
+        <p class="cap">VLM scores. Realism exceeds texture by 0.49–0.56 for OOTD, UNO, EasyControl and FLUX.1-Kontext-dev, vs. 0.37–0.40 for the other five.</p>
+      </div>
+      <div class="card">
+        <h3>Robustness to mask erosion</h3>
+        <div class="legend"><span><i class="ln" style="background:#D3D0C8"></i>other five models</span></div>
+        <div class="chartwrap" id="erode-chart"></div>
+        <p class="cap">\(S_{\text{rep}}^{(k)}\) as masks erode. FLUX.2-dev outperforms FLUX.1-Kontext-dev at every level (\(\bar S_{rep}\) 0.841 vs. 0.754).</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3>Representation-based similarity</h3>
+      <div class="tw"><table class="t" id="tab-rep"></table></div>
+      <p class="cap">\(S_{\text{global}}\): holistic consistency; \(S_{\text{rep}}^{(k)}\): garment-level similarity under increasing erosion (k = 0 → 3). High global scores do not guarantee local garment fidelity.</p>
+    </div>
+
+    <div class="grid2" style="margin-top:20px">
+      <div class="card">
+        <h3>Pixel-based metrics</h3>
+        <div class="tw"><table class="t" id="tab-pix"></table></div>
+        <p class="cap">Qwen-Editor leads PSNR/SSIM — visual inspection suggests it often minimizes pixel error by smoothing textures — while YingHui has the best FID.</p>
+      </div>
+      <div class="card">
+        <h3>Meta-evaluation: agreement with humans</h3>
+        <div class="corr" id="corr"></div>
+        <p class="cap">Correlations between model-level metric and human scores (9 models, shared rubric); lower-is-better metrics are negated. ▲ best per column.</p>
+      </div>
+    </div>
+
+    <div class="scope" style="margin-top:20px"><b>Scope.</b> The protocol assesses 2D visual fidelity and plausibility under the specified rubric; it does not validate physical fit, garment sizing or grading, or material-draping physics. Captions and filtering rely on foundation models (Gemini, DINOv3) that may introduce biases; complex multi-layer occlusions and extreme poses remain under-represented.</div>
+  </div>
+</section>
+
+<!-- ======================= CITATION & CONTACT ======================= -->
+<section class="s" id="citation">
+  <div class="wrap">
+    <div class="kicker">Citation</div>
+    <h2 style="margin-bottom:18px">BibTeX</h2>
+<pre class="bib" id="bib"><button class="copy" id="copy" type="button">Copy</button>@inproceedings{li2026openvtonbench,
+  title     = {OpenVTON-Bench: A Large-Scale High-Resolution Benchmark for
+               Controllable Virtual Try-On Evaluation},
+  author    = {Li, Jin and Chen, Tao and Wen, Kai and Yin, Siqi and
+               Jiang, Shuai and Wang, Weijie and Luo, Jingwen and Wu, Chenhui},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS),
+               Track on Evaluations and Datasets},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=hkbyKxmccF}
+}</pre>
+
+    <div class="kicker" style="margin-top:44px">Contact</div>
+    <div class="contact">
+      <div class="card"><b>Corresponding author</b><a href="mailto:elbert@renxing.co">elbert@renxing.co</a><small>Chenhui Wu · Renxing Intelligence</small></div>
+      <div class="card"><b>First author</b><a href="mailto:jinli@hdu.edu.cn">jinli@hdu.edu.cn</a><small>Jin Li · Hangzhou Dianzi University</small></div>
+      <div class="card"><b>WeChat ID</b><span>Elbert-Rxera</span><small>Corresponding author · search in WeChat to connect</small></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 The OpenVTON-Bench authors · Dataset released under CC BY-NC 4.0 for non-commercial research.</span>
+    <span><a href="https://github.com/RenxingIntelligence/OpenVTON-Bench" target="_blank" rel="noopener">Code</a> · <a href="https://huggingface.co/datasets/RenxingIntelligence/OpenVTON" target="_blank" rel="noopener">Dataset</a></span>
+  </div>
+</footer>
+</body>
+</html>
