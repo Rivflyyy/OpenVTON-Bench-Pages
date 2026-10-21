@@ -96,7 +96,7 @@ section.s { padding: 64px 0 8px; }
 .cap { font-size: 14px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
 .cap b { color: var(--ink-2); }
 figure { margin: 0; }
-figure img { border-radius: 12px; width: 100%; height: auto; }
+figure img { border-radius: 12px; width: 100%; height: auto; background: #EEEAE2; }  /* placeholder tone while loading */
 .abstract p { font-size: 17.5px; color: var(--ink-2); text-align: justify; hyphens: auto; }
 
 /* explorer */
@@ -107,7 +107,7 @@ figure img { border-radius: 12px; width: 100%; height: auto; }
 .qgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) 10px repeat(9, minmax(0, 1fr)); gap: 8px; }
 .qgrid .sep { }
 .qcell { display: flex; flex-direction: column; gap: 6px; }
-.qcell .im { aspect-ratio: 3 / 4; border-radius: 10px; overflow: hidden; background: #fff; border: 1px solid var(--line-2); }
+.qcell .im { aspect-ratio: 3 / 4; border-radius: 10px; overflow: hidden; background: #F2EFE9; border: 1px solid var(--line-2); }
 .qcell .im img { width: 100%; height: 100%; object-fit: cover; }
 .qcell.g .im img { object-fit: contain; }
 .qcell span { font-size: 12.5px; font-weight: 700; text-align: center; color: var(--ink-2); line-height: 1.2; overflow-wrap: break-word; }
@@ -228,7 +228,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .card { padding: 18px; }
   .hero { padding-top: 40px; }
   .nav .brand { display: none; }
-  .nav ul { margin-left: 0; }
+  .nav ul { margin-left: 0; gap: 0; }
+  .nav .ov { display: none; }
+  .nav .wrap { width: calc(100% - 16px); }
+  .nav ul { margin-inline: auto; }
+  .nav a.l { padding: 7px 7px; font-size: 13.5px; }
   .corr { grid-template-columns: 96px 1fr 44px 50px 46px; gap: 8px 6px; font-size: 13px; }
   .corr .v { font-size: 13px; }
   .corr .n { font-size: 13px; }

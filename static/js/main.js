@@ -74,9 +74,17 @@
       b.setAttribute("aria-label", "Example " + (e + 1));
       b.innerHTML = `<img src="static/img/qual/ex${pad(e)}_garment.webp" alt="" loading="lazy">`;
       b.addEventListener("click", () => show(e));
+      // warm the cache before the click: GitHub Pages can be slow from some regions
+      ["pointerenter", "focus", "touchstart"].forEach(ev => b.addEventListener(ev, () => prefetch(e), { once: true, passive: true }));
       picks.appendChild(b);
     }
+    const warmed = new Set();
+    function prefetch(e) {
+      if (warmed.has(e)) return; warmed.add(e);
+      QCOLS.forEach(c => { if (c) new Image().src = `static/img/qual/ex${pad(e)}_${c[0]}.webp`; });
+    }
     function show(e) {
+      warmed.add(e);
       [...picks.children].forEach((b, i) => b.setAttribute("aria-pressed", i === e));
       grid.innerHTML = QCOLS.map(c => c === null ? `<div class="sep"></div>` :
         `<div class="qcell ${c[2] || ""}"><div class="im"><img src="static/img/qual/ex${pad(e)}_${c[0]}.webp" alt="${c[1].replace(/<wbr>/g, "")}"></div><span>${c[1]}</span></div>`).join("");
@@ -242,6 +250,12 @@
       if (e.isIntersecting) { links.forEach(a => a.classList.remove("on")); const a = map.get(e.target.id); if (a) a.classList.add("on"); }
     }), { rootMargin: "-45% 0px -50% 0px" });
     map.forEach((_, id) => { const s = document.getElementById(id); if (s) io.observe(s); });
+    // short last section never reaches the middle band: highlight it once the page bottom is reached
+    addEventListener("scroll", () => {
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) {
+        links.forEach(a => a.classList.remove("on")); links[links.length - 1].classList.add("on");
+      }
+    }, { passive: true });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
